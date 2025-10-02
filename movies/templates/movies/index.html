@@ -1,53 +1,45 @@
 {% extends 'base.html' %}
-
 {% block content %}
-<div class="container mt-4">
-    <h2 class="mb-4">Petitions</h2>
-
-    <!-- Petition Creation Card -->
-    <div class="card mb-4 shadow-sm">
-        <div class="card-header bg-primary text-white">
-            Create a New Petition
+{% load static %}
+<div class="p-3">
+    <div class="container">
+        <div class="row mt-3">
+            <div class="col mx-auto mb-3">
+                <h2>List of Movies</h2>
+                <hr />
+                <p class="card-text">
+                    <form method="GET">
+                        <div class="row">
+                            <div class="col-auto">
+                                <div class="input-group col-auto">
+                                    <div class="input-group-text">
+                                        Search</div>
+                                    <input type="text" class="form-control" name="search">
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <button class="btn bg-dark text-white" type="submit">Search</button>
+                            </div>
+                        </div>
+                    </form>
+                </p>
+            </div>
         </div>
-        <div class="card-body">
-            <form method="POST">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit" class="btn btn-success">Submit Petition</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Petition Display Section -->
-    {% if petitions %}
-        <h4 class="mb-3">All Petitions</h4>
         <div class="row">
-            {% for petition in petitions %}
-            <div class="col-md-6 mb-4">
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ petition.movie_name }}</h5>
-                        <p class="card-text">{{ petition.description }}</p>
-                        <p class="mb-1"><strong>Created by:</strong> {{ petition.user.username }}</p>
-                        <p class="mb-2"><strong>Votes:</strong> {{ petition.votes }}</p>
-                        <form action="{% url 'movies.approve_petition' petition.id %}" method="POST">
-                            {% csrf_token %}
-                            {% if request.user not in petition.voters.all %}
-                            <button type="submit" class="btn btn-outline-primary btn-sm">Approve</button>
-                            {% else %}
-                            <button type="button" class="btn btn-secondary btn-sm" disabled>Already Voted</button>
-                            {% endif %}
-                        </form>
-                    </div>
-                    <div class="card-footer text-muted">
-                        Created on {{ petition.date|date:"M d, Y H:i" }}
+            {% for movie in template_data.movies %}
+            <div class="col-md-4 col-lg-3 mb-2">
+                <div class="p-2 card align-items-center pt-4">
+                    <img src="{{ movie.image.url }}"
+                    class="card-img-top rounded img-card-200">
+                    <div class="card-body text-center">
+                        <a href="{% url 'movies.show' id=movie.id %}" class="btn bg-dark text-white">
+                            {{ movie.name }}
+                        </a>
                     </div>
                 </div>
             </div>
             {% endfor %}
         </div>
-    {% else %}
-        <p>No petitions have been created yet.</p>
-    {% endif %}
+    </div>
 </div>
-{% endblock %}
+{% endblock content %}
