@@ -2,25 +2,37 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h2 class="mb-4">Petitions</h2>
+    <h2 class="mb-4">Movie Petitions</h2>
 
     <!-- Petition Creation Card -->
     <div class="card mb-4 shadow-sm">
-        <div class="card-header bg-primary text-white">
+        <div class="card-header" style="background-color: #add8e6; color: #000;">
             Create a New Petition
         </div>
         <div class="card-body">
-            <form method="POST">
+            <form method="POST" action="">
                 {% csrf_token %}
-                {{ form.as_p }}
+    
+                <!-- Movie Name Input -->
+                <div class="mb-3">
+                    <label for="movie_name" class="form-label">Movie Name</label>
+                    <input type="text" class="form-control" id="movie_name" name="movie_name" placeholder="Enter movie name" required>
+                </div>
+    
+                <!-- Description Textarea -->
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea class="form-control" id="description" name="description" rows="4" placeholder="This movie is about..." required></textarea>
+                </div>
+    
+                <!-- Submit Button -->
                 <button type="submit" class="btn btn-success">Submit Petition</button>
             </form>
         </div>
     </div>
 
-    <!-- Petition Display Section -->
+    <!-- Petition Display Cards -->
     {% if petitions %}
-        <h4 class="mb-3">All Petitions</h4>
         <div class="row">
             {% for petition in petitions %}
             <div class="col-md-6 mb-4">
@@ -32,11 +44,7 @@
                         <p class="mb-2"><strong>Votes:</strong> {{ petition.votes }}</p>
                         <form action="{% url 'movies.approve_petition' petition.id %}" method="POST">
                             {% csrf_token %}
-                            {% if request.user not in petition.voters.all %}
-                            <button type="submit" class="btn btn-outline-primary btn-sm">Approve</button>
-                            {% else %}
-                            <button type="button" class="btn btn-secondary btn-sm" disabled>Already Voted</button>
-                            {% endif %}
+                            <button type="submit" class="btn btn-outline-primary btn-sm">Agreed!</button>
                         </form>
                     </div>
                     <div class="card-footer text-muted">
